@@ -115,28 +115,26 @@ void drawPipes() {
         }
 
         // If pipe is not in screen(left or right), skip
-        if (pipeX[i] + pipeWidth < 0 || pipeX[i] > width) {
+        if (pipeX[i] + pipeWidth < 0 || pipeX[i] >= width) {
             continue;
         }
 
         // Check if this is the last pipe, if so, game over
-        if (!ENDLESS_GAME) {
-            gameOver = score == pipeTotal;
-        }
+        gameOver = !ENDLESS_GAME && score == pipeTotal;
 
-        // Practice2-3: Check collision between the bird and pipes
         // Check only for the next pipe
         if (i == nextPipe) {
-            pipeCollided[i] = (birdX + birdWidth / 2 >= pipeX[i] && birdX - birdWidth / 2 <= pipeX[i] + pipeWidth) &&
-                              (birdY + birdHeight / 2 >= pipeY[i] || birdY - birdHeight / 2 <= pipeY[i] - pipeGap);
-            if (!TESTING && pipeCollided[i]) {
-                gameOver = true;
-                break;
-            }
-
             // If bird is going to pass through this pipe, add score
             if (birdX - birdWidth / 2 > pipeX[i] + pipeWidth) {
                 ++score;
+            } else {
+                // Practice2-3: Check collision between the bird and pipes
+                pipeCollided[i] = (birdX + birdWidth / 2 >= pipeX[i] && birdX - birdWidth / 2 <= pipeX[i] + pipeWidth) &&
+                                  (birdY + birdHeight / 2 >= pipeY[i] || birdY - birdHeight / 2 <= pipeY[i] - pipeGap);
+                if (!TESTING && pipeCollided[i]) {
+                    gameOver = true;
+                    break;
+                }
             }
         }
 
