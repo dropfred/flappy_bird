@@ -27,7 +27,7 @@ int[] pipeX = new int[pipeTotal]; // X-coordinate of the pipe's left edge.
 int[] pipeY = new int[pipeTotal]; // Y-coordinate of the bottom pipe's top edge.
 
 // For testing purposes (turning pipes red instead of gameover)
-boolean TESTING = true; // Set to false to play the game normally
+boolean TESTING = false; // Set to false to play the game normally
 boolean[] pipeCollided = new boolean[pipeTotal]; // Tracks whether each pipe has been collided with by the bird
 
 int birdFrame = 0; // Current frame of the bird animation
