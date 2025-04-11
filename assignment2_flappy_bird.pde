@@ -27,7 +27,7 @@ int[] pipeX = new int[pipeTotal]; // X-coordinate of the pipe's left edge.
 int[] pipeY = new int[pipeTotal]; // Y-coordinate of the bottom pipe's top edge.
 
 // For testing purposes (turning pipes red instead of gameover)
-boolean TESTING = false; // Set to false to play the game normally
+boolean TESTING = true; // Set to false to play the game normally
 boolean[] pipeCollided = new boolean[pipeTotal]; // Tracks whether each pipe has been collided with by the bird
 
 int birdFrame = 0; // Current frame of the bird animation
@@ -110,7 +110,6 @@ void drawPipes() {
             int lastPipe = i > 0 ? i - 1 : pipeTotal - 1; // Index of the last pipe (loop to the end if i is zero)
             pipeX[i] = pipeX[lastPipe] + pipeDistance;
             pipeY[i] = (int)(random((float)(pipeMinHeight + pipeGap), (float)(height - pipeMinHeight)));
-            pipeCollided[i] = false;
         }
 
         // If pipe is not in screen (left or right), skip
@@ -126,14 +125,13 @@ void drawPipes() {
             // If bird is going to pass through this pipe, add score
             if (birdX - birdWidth / 2 > pipeX[i] + pipeWidth) {
                 score++;
-            } else {
-                // Practice2-3: Check collision between the bird and the pipe
-                pipeCollided[i] = (birdX + birdWidth / 2 >= pipeX[i] && birdX - birdWidth / 2 <= pipeX[i] + pipeWidth) &&
-                                  (birdY + birdHeight / 2 >= pipeY[i] || birdY - birdHeight / 2 <= pipeY[i] - pipeGap);
-                if (!TESTING && pipeCollided[i]) {
-                    gameOver = true;
-                    break;
-                }
+            }
+            // Practice2-3: Check collision between the bird and the pipe
+            pipeCollided[i] = (birdX + birdWidth / 2 >= pipeX[i] && birdX - birdWidth / 2 <= pipeX[i] + pipeWidth) &&
+                                (birdY + birdHeight / 2 >= pipeY[i] || birdY - birdHeight / 2 <= pipeY[i] - pipeGap);
+            if (!TESTING && pipeCollided[i]) {
+                gameOver = true;
+                break;
             }
         }
 
