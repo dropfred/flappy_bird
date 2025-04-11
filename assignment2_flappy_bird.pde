@@ -54,13 +54,14 @@ void draw() {
     if (!gameOver) {
         // Bird
         /* Practice1-1: Draw bird and add gravity to it */
+        // Draw bird
         pushMatrix();
         translate(birdX, birdY);
         imageMode(CENTER);
-        birdFrame = (frameCount / 10) % birdSprites.length;
+        birdFrame = (frameCount / 10) % birdSprites.length; // Next image every 10 frames, and loop over number of images
         image(birdSprites[birdFrame], 0, 0, birdWidth, birdHeight);
         popMatrix();
-
+        // Add gravity
         birdY += birdVelocity;
         birdVelocity = constrain(birdVelocity + gravity, -maxBirdVelocity, maxBirdVelocity);
 
@@ -99,22 +100,20 @@ void draw() {
 
 void drawPipes() {
     /* Practice2-2: Use loop to move pipes and check collision with bird */
-    int nextPipe = score % pipeTotal;
+    int nextPipe = score % pipeTotal; // Index of the pipe the bird has to pass through
     for (int i = 0; i < pipeTotal; i++) {
         //pipeX add speed
         pipeX[i] -= pipeSpeed;
 
-        // If pipe is done, move it to the end
+        // In endless mode, completed pipes are moved to the end with a new random height
         if (ENDLESS_GAME && pipeX[i] + pipeWidth < 0) {
-            int pp = i - 1;
-            if (pp < 0) {
-                pp += pipeTotal;
-            }
-            pipeX[i] = pipeX[pp] + pipeDistance;
+            int lastPipe = i > 0 ? i - 1 : pipeTotal - 1; // Index of the last pipe (loop to the end if i is zero)
+            pipeX[i] = pipeX[lastPipe] + pipeDistance;
             pipeY[i] = (int)(random((float)(pipeMinHeight + pipeGap), (float)(height - pipeMinHeight)));
+            pipeCollided[i] = false;
         }
 
-        // If pipe is not in screen(left or right), skip
+        // If pipe is not in screen (left or right), skip
         if (pipeX[i] + pipeWidth < 0 || pipeX[i] >= width) {
             continue;
         }
@@ -126,9 +125,9 @@ void drawPipes() {
         if (i == nextPipe) {
             // If bird is going to pass through this pipe, add score
             if (birdX - birdWidth / 2 > pipeX[i] + pipeWidth) {
-                ++score;
+                score++;
             } else {
-                // Practice2-3: Check collision between the bird and pipes
+                // Practice2-3: Check collision between the bird and the pipe
                 pipeCollided[i] = (birdX + birdWidth / 2 >= pipeX[i] && birdX - birdWidth / 2 <= pipeX[i] + pipeWidth) &&
                                   (birdY + birdHeight / 2 >= pipeY[i] || birdY - birdHeight / 2 <= pipeY[i] - pipeGap);
                 if (!TESTING && pipeCollided[i]) {
@@ -170,7 +169,7 @@ void init() {
     birdY = height / 3;
     birdVelocity = 0;
     /* Practice2-1: Setup pipe positions using for loop */
-    for (int i = 0; i < pipeTotal; ++i) {
+    for (int i = 0; i < pipeTotal; i++) {
         pipeX[i] = i * pipeDistance + width;
         pipeY[i] = (int)(random((float)(pipeMinHeight + pipeGap), (float)(height - pipeMinHeight)));
         pipeCollided[i] = false;
